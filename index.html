@@ -45,12 +45,6 @@
         max-font-size: 18px;
         cursor: pointer;
       }
-      #result {
-        font-size: 6vw;
-        font-weight: bold;
-        margin-bottom: 20px;
-        max-font-size: 24px;
-      }
       @media (min-width: 400px) {
         canvas {
           width: 300px;
@@ -66,17 +60,41 @@
           font-size: 18px;
           padding: 10px 20px;
         }
-        #result {
-          font-size: 24px;
-        }
+      }
+      /* モーダル用CSS追加 */
+      #modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+      #modal-content {
+        background: #fff;
+        padding: 30px 20px;
+        border-radius: 10px;
+        text-align: center;
+        min-width: 200px;
+        font-size: 1.5em;
       }
     </style>
   </head>
   <body>
-    <div id="result">結果: ？？？</div>
     <div class="pointer"></div>
     <canvas id="wheel" width="300" height="300"></canvas>
     <button id="spinBtn" onclick="spin()">START</button>
+
+    <!-- モーダル追加（バツなし） -->
+    <div id="modal" style="display: none">
+      <div id="modal-content">
+        <p id="modal-text"></p>
+      </div>
+    </div>
 
     <script>
       const items = [
@@ -138,6 +156,12 @@
         }
       }
 
+      // モーダル表示の関数（バツなし、消えない）
+      function showModal(text) {
+        document.getElementById("modal-text").innerText = text;
+        document.getElementById("modal").style.display = "flex";
+      }
+
       function spin() {
         document.getElementById("spinBtn").remove();
 
@@ -162,8 +186,8 @@
             let index = Math.floor(angle / arc);
             if (index < 0) index += items.length;
 
-            document.getElementById("result").innerText =
-              "結果: " + items[index];
+            // モーダルで表示
+            showModal("結果: " + items[index]);
           }
         }
         requestAnimationFrame(animate);
