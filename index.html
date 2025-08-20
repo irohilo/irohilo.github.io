@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>ルーレット</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: #f7f7f7;
+      }
+      canvas {
+        border-radius: 50%;
+        border: 5px solid #ddd;
+        width: 90vw;
+        max-width: 300px;
+        height: 90vw;
+        max-height: 300px;
+        box-sizing: border-box;
+        display: block;
+      }
+      .pointer {
+        width: 0;
+        height: 0;
+        border-left: 7vw solid transparent;
+        border-right: 7vw solid transparent;
+        border-top: 14vw solid #333;
+        margin-bottom: -7vw;
+        z-index: 10;
+        max-width: 40px;
+        max-height: 80px;
+        border-left-width: 20px;
+        border-right-width: 20px;
+        border-top-width: 40px;
+      }
+      button {
+        margin-top: 20px;
+        padding: 2vw 5vw;
+        font-size: 5vw;
+        max-font-size: 18px;
+        cursor: pointer;
+      }
+      #result {
+        font-size: 6vw;
+        font-weight: bold;
+        margin-bottom: 20px;
+        max-font-size: 24px;
+      }
+      @media (min-width: 400px) {
+        canvas {
+          width: 300px;
+          height: 300px;
+        }
+        .pointer {
+          border-left-width: 20px;
+          border-right-width: 20px;
+          border-top-width: 40px;
+          margin-bottom: -20px;
+        }
+        button {
+          font-size: 18px;
+          padding: 10px 20px;
+        }
+        #result {
+          font-size: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="result">結果: ？？？</div>
+    <div class="pointer"></div>
+    <canvas id="wheel" width="300" height="300"></canvas>
+    <button id="spinBtn" onclick="spin()">START</button>
+
+    <script>
+      const items = [
+        "クーポン1",
+        "クーポン2",
+        "クーポン3",
+        "コースター",
+        "大当たり",
+        "グッズ",
+      ];
+      const colors = [
+        "#4cc9f0",
+        "#90f09f",
+        "#f9c74f",
+        "#f94144",
+        "#f9844a",
+        "#9d4edd",
+      ];
+      const canvas = document.getElementById("wheel");
+      const ctx = canvas.getContext("2d");
+
+      // 画面サイズに応じてcanvasサイズを変更
+      function resizeCanvas() {
+        const size = Math.min(window.innerWidth * 0.9, 300);
+        canvas.width = size;
+        canvas.height = size;
+      }
+      resizeCanvas();
+      window.addEventListener("resize", () => {
+        resizeCanvas();
+        drawWheel();
+      });
+
+      const radius = () => canvas.width / 2;
+
+      let currentRotation = 0;
+
+      function drawWheel() {
+        const arc = (2 * Math.PI) / items.length;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < items.length; i++) {
+          const angle = i * arc + currentRotation;
+          ctx.beginPath();
+          ctx.moveTo(radius(), radius());
+          ctx.arc(radius(), radius(), radius(), angle, angle + arc);
+          ctx.fillStyle = colors[i];
+          ctx.fill();
+          ctx.stroke();
+
+          // テキスト
+          ctx.save();
+          ctx.translate(radius(), radius());
+          ctx.rotate(angle + arc / 2);
+          ctx.textAlign = "right";
+          ctx.fillStyle = "#000";
+          ctx.font = `${Math.max(canvas.width / 18, 12)}px sans-serif`;
+          ctx.fillText(items[i], radius() - 10, 10);
+          ctx.restore();
+        }
+      }
+
+      function spin() {
+        document.getElementById("spinBtn").remove();
+
+        const spinAngle = Math.floor(Math.random() * 360) + 1800;
+        const duration = 4000;
+        const start = performance.now();
+
+        function animate(time) {
+          const elapsed = time - start;
+          if (elapsed < duration) {
+            const easeOut = 1 - Math.pow(1 - elapsed / duration, 3);
+            currentRotation = (spinAngle * easeOut * Math.PI) / 180;
+            drawWheel();
+            requestAnimationFrame(animate);
+          } else {
+            currentRotation = (spinAngle * Math.PI) / 180;
+            drawWheel();
+
+            const arc = (2 * Math.PI) / items.length;
+            const angle =
+              (-Math.PI / 2 - currentRotation + 2 * Math.PI) % (2 * Math.PI);
+            let index = Math.floor(angle / arc);
+            if (index < 0) index += items.length;
+
+            document.getElementById("result").innerText =
+              "結果: " + items[index];
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+
+      drawWheel();
+    </script>
+  </body>
+</html>
