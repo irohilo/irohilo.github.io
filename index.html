@@ -11,7 +11,7 @@
         margin: 0;
         padding: 0;
         overflow: hidden;
-        font-family: "Yu Gothic", "Meiryo", "sans-serif"; /* ゴシック体を指定 */
+        font-family: "Yu Gothic", "Meiryo", sans-serif; /* ゴシック体 */
       }
       body {
         display: flex;
@@ -22,10 +22,10 @@
         margin: 0;
         padding: 0;
         overflow: hidden;
-        font-family: "Yu Gothic", "Meiryo", "sans-serif";
+        font-family: "Yu Gothic", "Meiryo", sans-serif;
         background: #f7f7f7;
         background-image: url("background_img.jpg");
-        background-size: auto 100vh;      /* 縦を画面いっぱいに */
+        background-size: auto 100vh; /* 縦を画面いっぱいに */
         background-position: left center; /* 横は左寄せ */
         background-repeat: no-repeat;
       }
@@ -56,7 +56,7 @@
       #pointer {
         position: absolute;
         left: 50%;
-        top: -60px; /* canvasの上に配置（大きくした分上に） */
+        top: -60px; /* canvasの上に配置 */
         transform: translateX(-50%) rotate(180deg); /* 下向きに回転 */
         width: 50px;
         height: 170px;
@@ -107,14 +107,15 @@
       }
       #modal-content {
         background: #fff;
-        padding: 30px 20px;
+        padding: 15px 20px 28px;
         border-radius: 10px;
         text-align: center;
-        min-width: 200px;
-        font-size: 1.5em;
+        width: 300px;
+        height: 150px;
+        font-size: 3em;
         border: 4px solid #f49293;
         box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
-        font-family: "Yu Gothic", "Meiryo", "sans-serif"; /* ゴシック体を指定 */
+        font-family: "Yu Gothic", "Meiryo", sans-serif;
       }
       @media (max-width: 429px) {
         #stand {
@@ -161,7 +162,7 @@
     <div id="container">
       <div id="wheel-area">
         <canvas id="wheel"></canvas>
-        <!-- ポインター（三角形のみ、円なし） -->
+        <!-- ポインター -->
         <svg id="pointer" viewBox="0 0 100 100">
           <polygon
             points="50,10 90,80 10,80"
@@ -183,7 +184,6 @@
     </div>
     <script>
       const items = ["A賞", "B賞", "C賞", "D賞", "A賞", "B賞", "C賞", "D賞"];
-      // 紫と水色で交互に
       const colors = [
         "#f5e2b8",
         "#a4c3bb",
@@ -215,7 +215,7 @@
         const arc = (2 * Math.PI) / items.length;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 外枠（ゴールド）
+        // 外枠
         ctx.save();
         ctx.beginPath();
         ctx.arc(radius(), radius(), radius() - 6, 0, 2 * Math.PI);
@@ -244,13 +244,16 @@
           ctx.translate(radius(), radius());
           ctx.rotate(angle + arc / 2);
           ctx.textAlign = "center";
-          ctx.fillStyle = "#3E2723"; // さらに濃いこげ茶色
-          ctx.font = `${Math.max(canvas.width / 16, 13)}px sans-serif`;
+          ctx.fillStyle = "#3E2723";
+          ctx.font = `${Math.max(
+            canvas.width / 16,
+            13
+          )}px "Yu Gothic", "Meiryo", sans-serif`;
           ctx.fillText(items[i], radius() * 0.62, 8);
           ctx.restore();
         }
 
-        // 中央円（ゴールド枠＋白）
+        // 中央円
         ctx.save();
         ctx.beginPath();
         ctx.arc(radius(), radius(), radius() * 0.22, 0, 2 * Math.PI);
