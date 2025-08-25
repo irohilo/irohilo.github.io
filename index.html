@@ -241,15 +241,22 @@
 
           // テキスト
           ctx.save();
-          ctx.translate(radius(), radius());
-          ctx.rotate(angle + arc / 2);
+          ctx.translate(radius(), radius()); // 中心へ移動
+          ctx.rotate(angle + arc / 2); // セグメント中央角度に回転
+          ctx.translate(radius() * 0.62, 0); // 半径方向に移動
+
+          // ★ 文字を中心に向けるために90°回転させる
+          ctx.rotate(Math.PI / 2);
+
           ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
           ctx.fillStyle = "#3E2723";
           ctx.font = `${Math.max(
             canvas.width / 16,
             13
           )}px "Yu Gothic", "Meiryo", sans-serif`;
-          ctx.fillText(items[i], radius() * 0.62, 8);
+          ctx.fillText(items[i], 0, 0);
+
           ctx.restore();
         }
 
